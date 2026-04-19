@@ -54,7 +54,7 @@ function JoinScreen({ onJoin }) {
               Escape the Study
             </h1>
             <p className="text-stone-400 mt-3 text-base">
-              A collaborative puzzle experience · any number of players
+              A collaborative puzzle experience
             </p>
           </div>
 
@@ -79,7 +79,7 @@ function JoinScreen({ onJoin }) {
               Enter the Study →
             </button>
             <p className="text-stone-600 text-sm text-center mt-6">
-              Share this URL — everyone joins the same room
+              wait
             </p>
           </div>
         </div>
