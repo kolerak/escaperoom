@@ -2,7 +2,6 @@
   "name": "escaperoom",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -13,5 +12,10 @@
     "react": "^19",
     "react-dom": "^19",
     "firebase": "^11"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3",
+    "autoprefixer": "^10",
+    "postcss": "^8"
   }
 }
