@@ -8,7 +8,7 @@ import {
 } from "firebase/database";
 
 const GAME_REF = "escape_room_v1";
-const AVATARS  = ["🦊","🐼","🦁","🐸","🐙","🦋","🐯","🦄","🐺","🦝"];
+const AVATARS  = ["🦊","🐼","🦁","👾","🐙","🦋","🐯","🦄","🐺","🦝"];
 
 function genId() { return Math.random().toString(36).slice(2, 9); }
 
@@ -40,50 +40,50 @@ function JoinScreen({ onJoin }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-950 p-4">
-      {/* Ambient glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-900/20 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative w-full max-w-md">
-        {/* Logo area */}
-        <div className="text-center mb-10">
-          <div className="text-7xl mb-3 drop-shadow-lg">🔐</div>
-          <h1 className="text-4xl font-black tracking-tight text-amber-100">
-            Escape the Study
-          </h1>
-          <p className="text-stone-400 mt-2 text-sm">
-            A collaborative puzzle experience · any number of players
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-stone-950 p-4">
+        {/* Ambient glow */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-amber-900/20 rounded-full blur-[100px]" />
         </div>
 
-        <div className="bg-stone-900 border border-stone-700 rounded-2xl p-8 shadow-2xl">
-          <p className="text-stone-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            Your Name
-          </p>
-          <input
-            autoFocus
-            value={name}
-            maxLength={20}
-            onChange={e => { setName(e.target.value); setErr(""); }}
-            onKeyDown={e => e.key === "Enter" && submit()}
-            placeholder="e.g. Alex, Mert…"
-            className="w-full bg-stone-800 border-2 border-stone-700 focus:border-amber-500 outline-none rounded-xl px-4 py-3 text-white text-lg placeholder:text-stone-600 transition"
-          />
-          {err && <p className="text-red-400 text-sm mt-2">{err}</p>}
-          <button
-            onClick={submit}
-            className="mt-4 w-full bg-amber-600 hover:bg-amber-500 active:scale-95 transition text-white font-black py-3 rounded-xl text-lg shadow-lg"
-          >
-            Enter the Study →
-          </button>
-          <p className="text-stone-600 text-xs text-center mt-4">
-            Share this URL — everyone joins the same room
-          </p>
+        <div className="relative w-full max-w-lg">
+          {/* Logo area */}
+          <div className="text-center mb-12">
+            <div className="text-8xl mb-4 drop-shadow-xl" aria-hidden="true">🔐</div>
+            <h1 className="text-5xl font-black tracking-tight text-amber-100">
+              Escape the Study
+            </h1>
+            <p className="text-stone-400 mt-3 text-base">
+              A collaborative puzzle experience · any number of players
+            </p>
+          </div>
+
+          <div className="bg-stone-900 border border-stone-700 rounded-3xl p-10 shadow-2xl">
+            <p className="text-stone-400 text-sm font-semibold uppercase tracking-widest mb-3">
+              Your Name
+            </p>
+            <input
+              autoFocus
+              value={name}
+              maxLength={20}
+              onChange={e => { setName(e.target.value); setErr(""); }}
+              onKeyDown={e => e.key === "Enter" && submit()}
+              placeholder="e.g. Alex, Mert…"
+              className="w-full bg-stone-800 border-2 border-stone-700 focus:border-amber-500 outline-none rounded-xl px-5 py-4 text-white text-xl placeholder:text-stone-600 transition"
+            />
+            {err && <p className="text-red-400 text-base mt-3">{err}</p>}
+            <button
+              onClick={submit}
+              className="mt-6 w-full bg-amber-600 hover:bg-amber-500 active:scale-95 transition text-white font-black py-4 rounded-xl text-xl shadow-lg"
+            >
+              Enter the Study →
+            </button>
+            <p className="text-stone-600 text-sm text-center mt-6">
+              Share this URL — everyone joins the same room
+            </p>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 
@@ -230,12 +230,13 @@ function PuzzleRoom({ room, roomIndex, players, attempts, myId, myName, onSubmit
           {/* Puzzle text */}
           <div className="bg-stone-900 border border-amber-900/40 rounded-xl p-5 flex-1">
             {room.image && (
-              <img
-                src={room.image}
-                alt={room.title}
-                className="w-full max-h-64 object-cover rounded-lg mb-4 border border-stone-700"
-              />
-            )}
+                <img
+                  key={room.image} /* Forces React to unmount the old image instantly */
+                  src={room.image}
+                  alt={room.title}
+                  className="w-full max-h-64 object-cover rounded-lg mb-4 border border-stone-700 bg-stone-800"
+                />
+              )}
             <pre className="text-amber-100 text-sm leading-relaxed whitespace-pre-wrap font-mono">
               {room.puzzle}
             </pre>
