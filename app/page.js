@@ -229,6 +229,13 @@ function PuzzleRoom({ room, roomIndex, players, attempts, myId, myName, onSubmit
 
           {/* Puzzle text */}
           <div className="bg-stone-900 border border-amber-900/40 rounded-xl p-5 flex-1">
+            {room.image && (
+              <img
+                src={room.image}
+                alt={room.title}
+                className="w-full max-h-64 object-cover rounded-lg mb-4 border border-stone-700"
+              />
+            )}
             <pre className="text-amber-100 text-sm leading-relaxed whitespace-pre-wrap font-mono">
               {room.puzzle}
             </pre>
@@ -406,6 +413,18 @@ export default function EscapeRoom() {
   const [myName, setMyName] = useState(null);
   const [game, setGame]     = useState(null);
 
+
+  const audioRef = useRef(null);
+const [muted, setMuted] = useState(true);
+
+function toggleMute() {
+  const next = !muted;
+  setMuted(next);
+  if (audioRef.current) {
+    audioRef.current.muted = next;
+    if (!next) audioRef.current.play().catch(() => {});
+  }
+}
   // Subscribe
   useEffect(() => {
     const unsub = onValue(ref(db, GAME_REF), snap => setGame(snap.val()));
@@ -518,32 +537,27 @@ export default function EscapeRoom() {
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
-  if (!myName) return <JoinScreen onJoin={handleJoin} />;
+let screen = null;
 
-  if (!game) return (
+  if (!myName) screen = <JoinScreen onJoin={handleJoin} />;
+  else if (!game) screen = (
     <div className="min-h-screen flex items-center justify-center bg-stone-950">
       <p className="text-stone-500 animate-pulse">Connecting…</p>
     </div>
   );
-
-  const phase = game.phase;
-
-  if (phase === "lobby") {
-    return (
-      <Lobby
-        players={game.players}
-        myId={myId}
-        isHost={isHost}
-        onStart={handleStart}
-        onClear={handleClear}
-      />
-    );
-  }
-
-  if (phase === "playing" || phase === "solved") {
+  else if (game.phase === "lobby") screen = (
+    <Lobby
+      players={game.players}
+      myId={myId}
+      isHost={isHost}
+      onStart={handleStart}
+      onClear={handleClear}
+    />
+  );
+  else if (game.phase === "playing" || game.phase === "solved") {
     // Filter attempts for current room only
     const roomAttempts = attempts.filter(a => a.room === game.currentRoom);
-    return (
+    screen = (
       <PuzzleRoom
         room={currentRoom}
         roomIndex={game.currentRoom}
@@ -558,17 +572,26 @@ export default function EscapeRoom() {
       />
     );
   }
+  else if (game.phase === "escaped") screen = (
+    <EscapedScreen
+      players={game.players}
+      finishTime={game.finishTime}
+      isHost={isHost}
+      onPlayAgain={handlePlayAgain}
+    />
+  );
 
-  if (phase === "escaped") {
-    return (
-      <EscapedScreen
-        players={game.players}
-        finishTime={game.finishTime}
-        isHost={isHost}
-        onPlayAgain={handlePlayAgain}
-      />
-    );
-  }
-
-  return null;
+  return (
+    <>
+      <audio ref={audioRef} src="/music.mp3" loop autoPlay muted={muted} />
+      <button
+        onClick={toggleMute}
+        className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-stone-800 hover:bg-stone-700 border border-stone-600 text-xl flex items-center justify-center shadow-lg transition active:scale-95"
+        title={muted ? "Unmute music" : "Mute music"}
+      >
+        {muted ? "🔇" : "🔊"}
+      </button>
+      {screen}
+    </>
+  );
 }
